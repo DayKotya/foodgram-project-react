@@ -1,9 +1,13 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
+from users.validators import validate_username
+
 
 class User(AbstractUser):
-    email = models.EmailField(unique=True, verbose_name='Почта')
+    email = models.EmailField(unique=True,
+                              validators=[validate_username],
+                              verbose_name='Почта')
     first_name = models.CharField(max_length=200, verbose_name='Фамилия')
     last_name = models.CharField(max_length=200, verbose_name='Имя')
 
