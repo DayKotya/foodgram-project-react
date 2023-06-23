@@ -12,6 +12,7 @@ class User(AbstractUser):
     last_name = models.CharField(max_length=200, verbose_name='Имя')
 
     class Meta:
+        ordering = ['id']
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
 

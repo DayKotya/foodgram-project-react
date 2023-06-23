@@ -5,7 +5,7 @@ import re
 
 
 def validate_username(value):
-    regex = r'^[\w.@+-]+\z'
+    regex = r'^[\w.@+-]+\Z'
     if not re.match(regex, value):
         raise ValidationError(
             _('Некорректный формат имени пользователя.'),

@@ -1,39 +1,64 @@
 from django.contrib import admin
 
-from recipes import models
+from recipes.models import (Tag,
+                            Ingredient,
+                            Recipe,
+                            FavoriteRecipe,
+                            ShoppingList,
+                            RecipeIngredient)
 
 
-@admin.register(models.Tag)
+class RecipeIngredientInLine(admin.TabularInline):
+    model = RecipeIngredient
+
+
+@admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
     list_display = ('pk', 'name', 'color', 'slug')
 
 
-@admin.register(models.Ingredient)
+@admin.register(Ingredient)
 class IngredientAdmin(admin.ModelAdmin):
     list_display = ('pk', 'name', 'measurement_unit')
     list_filter = ('name', )
     search_fields = ('name', )
 
 
-@admin.register(models.Recipe)
+@admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
+    inlines = (RecipeIngredientInLine,)
     list_display = (
         'pk',
         'author',
-        'name'
+        'name',
+        'get_favorite_count'
         )
+    readonly_fields = ('how_many_times_favorited',)
     list_filter = ('name', 'author', 'tags')
 
-    @admin.display(description='Добавили в избранное')
-    def favorite_count(self, obj):
+    def get_favorite_count(self, obj):
         return obj.favorite_recipes.count()
 
+    @admin.display(description='Количество в избранных')
+    def how_many_times_favorited(self, obj):
+        return obj.favorite_recipes.count()
 
-@admin.register(models.FavoriteRecipe)
+    get_favorite_count.short_description = 'Число добавлений в избранное'
+
+
+@admin.register(FavoriteRecipe)
 class FavoriteRecipeAdmin(admin.ModelAdmin):
     list_display = ('pk', 'recipe', 'user')
 
 
-@admin.register(models.ShoppingList)
+@admin.register(RecipeIngredient)
+class RecipeIngredientAdmin(admin.ModelAdmin):
+    list_display = ('id', 'recipe', 'ingredient', 'amount',)
+    search_fields = (
+        'recipe__name', 'recipe__author__username', 'recipe__author__email',)
+    list_filter = ('recipe__tags',)
+
+
+@admin.register(ShoppingList)
 class ShoppingListAdmin(admin.ModelAdmin):
     list_display = ('pk', 'recipe', 'user')
