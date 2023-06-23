@@ -140,12 +140,11 @@ class RecipeViewSet(ModelViewSet):
 
         content = 'Список покупок:\n\n'
         for ingredient in ingredients:
-            name = ingredient.get('ingredient__name', '')
+            name = ingredient.get('ingredient__name')
             measurement_unit = ingredient.get(
-                'ingredient__measurement_unit',
-                ''
+                'ingredient__measurement_unit'
             )
-            amount = ingredient.get('amount', 0)
+            amount = ingredient.get('amount')
             content += f'{name} ({measurement_unit}) - {amount}\n'
 
         response = HttpResponse(content, content_type='text/plain')
