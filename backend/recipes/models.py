@@ -8,7 +8,7 @@ class Tag(models.Model):
         max_length=200,
         unique=True,
         verbose_name='Название тэга'
-        )
+    )
     color = models.CharField(max_length=7, verbose_name='Цвет тэга')
     slug = models.SlugField(unique=True, verbose_name='Слаг тэга')
 
@@ -24,11 +24,11 @@ class Ingredient(models.Model):
     name = models.CharField(
         verbose_name='Название ингредиента',
         max_length=200
-        )
+    )
     measurement_unit = models.CharField(
         verbose_name='Единица измерения',
         max_length=200
-        )
+    )
 
     class Meta:
         verbose_name = 'Ингредиент'
@@ -44,7 +44,7 @@ class Recipe(models.Model):
         on_delete=models.CASCADE,
         related_name='recipes',
         verbose_name='Автор'
-        )
+    )
     name = models.CharField(max_length=200, verbose_name='Название')
     image = models.ImageField(upload_to='recipes/', verbose_name='Изображение')
     cooking_time = models.IntegerField(verbose_name='Время приготовления')
@@ -76,12 +76,12 @@ class RecipeIngredient(models.Model):
         on_delete=models.CASCADE,
         related_name='recipeingredient',
         verbose_name='Рецепт'
-        )
+    )
     ingredient = models.ForeignKey(
         Ingredient,
         on_delete=models.CASCADE,
         verbose_name='Ингредиент'
-        )
+    )
     amount = models.PositiveIntegerField(verbose_name='Количество')
 
     class Meta:
@@ -95,12 +95,12 @@ class FavoriteRecipe(models.Model):
         on_delete=models.CASCADE,
         verbose_name='Рецепт',
         related_name='favorite_recipes'
-        )
+    )
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         verbose_name='Пользователь',
-        )
+    )
 
     class Meta:
         verbose_name = 'Избранное'
@@ -119,13 +119,13 @@ class ShoppingList(models.Model):
         on_delete=models.CASCADE,
         related_name='shopping_list',
         verbose_name='Рецепты'
-        )
+    )
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         verbose_name='Пользователь',
         related_name='shopping_list'
-        )
+    )
 
     class Meta:
         verbose_name = 'Корзина'

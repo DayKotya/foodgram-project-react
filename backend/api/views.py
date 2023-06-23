@@ -72,7 +72,7 @@ class RecipeViewSet(ModelViewSet):
             obj, created = FavoriteRecipe.objects.get_or_create(
                 user=request.user,
                 recipe=recipe
-                )
+            )
             if created:
                 serializer = ShortRecipeSerializer(recipe)
                 return Response(serializer.data,
@@ -101,7 +101,7 @@ class RecipeViewSet(ModelViewSet):
             obj, created = ShoppingList.objects.get_or_create(
                 user=request.user,
                 recipe=recipe
-                )
+            )
             if created:
                 serializer = ShortRecipeSerializer(recipe)
                 return Response(serializer.data,
@@ -120,9 +120,9 @@ class RecipeViewSet(ModelViewSet):
                             status=status.HTTP_400_BAD_REQUEST)
 
     @action(
-            detail=False,
-            permission_classes=(IsAuthenticated,)
-        )
+        detail=False,
+        permission_classes=(IsAuthenticated,)
+    )
     def download_shopping_cart(self, request):
         user = request.user
         shopping_list = user.shopping_list.all()
@@ -133,10 +133,10 @@ class RecipeViewSet(ModelViewSet):
 
         ingredients = RecipeIngredient.objects.filter(
             recipe__shopping_list__user=user
-            ).values(
+        ).values(
             'ingredient__name',
             'ingredient__measurement_unit'
-            ).annotate(amount=Sum('amount'))
+        ).annotate(amount=Sum('amount'))
 
         content = 'Список покупок:\n\n'
         for ingredient in ingredients:
@@ -144,7 +144,7 @@ class RecipeViewSet(ModelViewSet):
             measurement_unit = ingredient.get(
                 'ingredient__measurement_unit',
                 ''
-                )
+            )
             amount = ingredient.get('amount', 0)
             content += f'{name} ({measurement_unit}) - {amount}\n'
 

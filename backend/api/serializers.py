@@ -53,7 +53,7 @@ class CustomUserSerializer(UserSerializer):
             not user.is_anonymous
             and
             Subscribe.objects.filter(user=user, author=obj.id).exists()
-            )
+        )
 
 
 class ShortRecipeSerializer(serializers.ModelSerializer):
@@ -66,7 +66,7 @@ class ShortRecipeSerializer(serializers.ModelSerializer):
             'name',
             'image',
             'cooking_time'
-            )
+        )
 
 
 class SubscriptionsSerializer(CustomUserSerializer):
@@ -84,7 +84,7 @@ class SubscriptionsSerializer(CustomUserSerializer):
             'is_subscribed',
             'recipes',
             'recipes_count'
-            )
+        )
         read_only_fields = ('email',
                             'username',
                             'first_name',
@@ -133,7 +133,7 @@ class RecipeIngredientSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'amount'
-            )
+        )
 
 
 class GetRecipeSerializer(serializers.ModelSerializer):
@@ -157,11 +157,10 @@ class GetRecipeSerializer(serializers.ModelSerializer):
             'image',
             'text',
             'cooking_time'
-            )
+        )
 
     def get_ingredients(self, obj):
-        recipe = obj
-        ingredients = recipe.ingredients.values(
+        ingredients = obj.ingredients.values(
             'id',
             'name',
             'measurement_unit',
@@ -171,23 +170,23 @@ class GetRecipeSerializer(serializers.ModelSerializer):
 
     def get_is_favorited(self, obj):
         return (
-                self.context['request'].user.is_authenticated
-                and
-                FavoriteRecipe.objects.filter(
-                    user=self.context['request'].user,
-                    recipe=obj
-                ).exists()
-            )
+            self.context['request'].user.is_authenticated
+            and
+            FavoriteRecipe.objects.filter(
+                user=self.context['request'].user,
+                recipe=obj
+            ).exists()
+        )
 
     def get_is_in_shopping_cart(self, obj):
         return (
             self.context['request'].user.is_authenticated
             and
             ShoppingList.objects.filter(
-                    user=self.context['request'].user,
-                    recipe=obj
-                ).exists()
-            )
+                user=self.context['request'].user,
+                recipe=obj
+            ).exists()
+        )
 
 
 class CreateRecipeSerializer(serializers.ModelSerializer):
