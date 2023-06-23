@@ -13,7 +13,7 @@ class RecipeFilter(django_filters.FilterSet):
     is_favorited = django_filters.BooleanFilter(method='is_favorited')
     is_in_shopping_cart = django_filters.BooleanFilter(
         method='is_in_shopping_cart'
-        )
+    )
 
     class Meta:
         model = Recipe
