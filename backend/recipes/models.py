@@ -15,7 +15,7 @@ class Tag(models.Model):
         max_length=7,
         verbose_name='Цвет тэга',
         validators=(
-            validate_hex_color
+            validate_hex_color,
         )
     )
     slug = models.SlugField(unique=True, verbose_name='Слаг тэга')
