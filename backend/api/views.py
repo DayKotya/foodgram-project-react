@@ -31,13 +31,15 @@ from api.serializers import (
 )
 from api.permissions import IsAdminOrReadOnly, IsAuthorOrReadOnly
 from api.pagination import Pagination
-from api.filters import RecipeFilter
+from api.filters import RecipeFilter, IngredientFilter
 
 
 class IngredientViewSet(ReadOnlyModelViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
     permission_classes = (IsAdminOrReadOnly,)
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = IngredientFilter
 
 
 class TagViewSet(ReadOnlyModelViewSet):
