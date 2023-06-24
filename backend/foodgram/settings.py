@@ -13,7 +13,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     'localhost',
-    '127.0.0.1'
+    '127.0.0.1',
+    'backend',
+    '51.250.71.17',
+    'db'
 ]
 
 
@@ -124,7 +127,7 @@ DJOSER = {
 
 AUTH_USER_MODEL = 'users.User'
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru'
 
 TIME_ZONE = 'UTC'
 
