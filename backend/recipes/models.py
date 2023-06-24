@@ -57,7 +57,7 @@ class Recipe(models.Model):
     image = models.ImageField(upload_to='recipes/', verbose_name='Изображение')
     cooking_time = models.IntegerField(
         verbose_name='Время приготовления',
-        validators=(MinValueValidator(1, message='Минимум - 1'))
+        validators=(MinValueValidator(1, message='Минимум - 1'),)
     )
     text = models.TextField(verbose_name='Описание')
     tags = models.ManyToManyField(
@@ -95,7 +95,7 @@ class RecipeIngredient(models.Model):
     )
     amount = models.PositiveSmallIntegerField(
         verbose_name='Количество',
-        validators=(MinValueValidator(1, message='Минимум - 1'))
+        validators=(MinValueValidator(1, message='Минимум - 1'),)
     )
 
     class Meta:
