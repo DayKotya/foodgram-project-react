@@ -1,6 +1,8 @@
 from django.db import models
+from django.core.validators import MinValueValidator
 
 from users.models import User
+from recipes.validators import validate_hex_color
 
 
 class Tag(models.Model):
@@ -9,7 +11,13 @@ class Tag(models.Model):
         unique=True,
         verbose_name='Название тэга'
     )
-    color = models.CharField(max_length=7, verbose_name='Цвет тэга')
+    color = models.CharField(
+        max_length=7,
+        verbose_name='Цвет тэга',
+        validators=(
+            validate_hex_color
+        )
+    )
     slug = models.SlugField(unique=True, verbose_name='Слаг тэга')
 
     class Meta:
@@ -47,7 +55,10 @@ class Recipe(models.Model):
     )
     name = models.CharField(max_length=200, verbose_name='Название')
     image = models.ImageField(upload_to='recipes/', verbose_name='Изображение')
-    cooking_time = models.IntegerField(verbose_name='Время приготовления')
+    cooking_time = models.IntegerField(
+        verbose_name='Время приготовления',
+        validators=(MinValueValidator(1, message='Минимум - 1'))
+    )
     text = models.TextField(verbose_name='Описание')
     tags = models.ManyToManyField(
         Tag,
@@ -82,7 +93,10 @@ class RecipeIngredient(models.Model):
         on_delete=models.CASCADE,
         verbose_name='Ингредиент'
     )
-    amount = models.PositiveIntegerField(verbose_name='Количество')
+    amount = models.PositiveSmallIntegerField(
+        verbose_name='Количество',
+        validators=(MinValueValidator(1, message='Минимум - 1'))
+    )
 
     class Meta:
         verbose_name = 'Ингредиент в рецепте'
