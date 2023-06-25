@@ -1,7 +1,6 @@
 from rest_framework import status
 
 from djoser.serializers import UserCreateSerializer, UserSerializer
-from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 from drf_base64.fields import Base64ImageField
 from django.db.models import F
@@ -207,56 +206,6 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
             'text',
             'cooking_time',
         )
-
-    def validate_ingredients(self, value):
-        ingredients = value
-
-        if not ingredients:
-            raise ValidationError({
-                'ingredients': 'Совсем без ингредиента нельзя!'
-            })
-
-        ingredients_list = []
-
-        for item in ingredients:
-            ingredient = get_object_or_404(Ingredient, id=item['id'])
-            if ingredient in ingredients_list:
-                raise ValidationError({
-                    'ingredients': 'Ингредиенты не должны повторяться!'
-                })
-            if int(item['amount']) < 1:
-                raise ValidationError({
-                    'amount': 'Ингредиента должно быть хоть сколько-то!'
-                })
-            ingredients_list.append(ingredient)
-        return value
-
-    def validate_tags(self, value):
-        tags = value
-
-        if not tags:
-            raise ValidationError({
-                'tags': 'Совсем без тегов нельзя!'
-            })
-
-        tags_list = []
-
-        for tag in tags:
-            if tag in tags_list:
-                raise ValidationError({
-                    'tags': 'Теги должны быть уникальными!'
-                })
-            tags_list.append(tag)
-        return value
-
-    def validate_cooking_time(self, value):
-        cooking_time = value
-
-        if cooking_time < 1:
-            raise ValidationError({
-                'cooking_time': 'Время готовки должно быть хотя бы минуту!'
-            })
-        return value
 
     def create(self, validated_data):
         tags = validated_data.pop('tags')
