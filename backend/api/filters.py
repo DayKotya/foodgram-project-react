@@ -18,8 +18,12 @@ class RecipeFilter(FilterSet):
         queryset=Tag.objects.all(),
     )
 
-    is_favorited = filters.BooleanFilter()
-    is_in_shopping_cart = filters.BooleanFilter()
+    is_favorited = filters.BooleanFilter(
+        method='get_is_favorited'
+    )
+    is_in_shopping_cart = filters.BooleanFilter(
+        method='get_is_in_shopping_cart'
+    )
 
     class Meta:
         model = Recipe
