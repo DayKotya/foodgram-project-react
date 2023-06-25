@@ -21,7 +21,7 @@ jobs:
         with:
           context: backend/
           push: true
-          tags: daykotyara/foodgram
+          tags: daykotyara/foodgram_backend
   deploy:
     runs-on: ubuntu-latest
     needs: build_and_push_to_docker_hub
@@ -34,7 +34,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
-            sudo docker pull daykotyara/foodgram:latest
+            sudo docker pull daykotyara/foodgram_backend:latest
             sudo docker-compose stop
             sudo docker-compose rm backend
             touch .env
