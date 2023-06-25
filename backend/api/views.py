@@ -63,6 +63,35 @@ class RecipeViewSet(ModelViewSet):
             return GetRecipeSerializer
         return CreateRecipeSerializer
 
+    # @action(
+    #     detail=True,
+    #     methods=('post', 'delete'),
+    #     permission_classes=(IsAuthenticated,)
+    # )
+    # def favorite(self, request, pk):
+    #     if request.method == 'POST':
+    #         recipe = get_object_or_404(Recipe, id=pk)
+    #         obj, created = FavoriteRecipe.objects.get_or_create(
+    #             user=request.user,
+    #             recipe=recipe
+    #         )
+    #         if created:
+    #             serializer = ShortRecipeSerializer(recipe)
+    #             return Response(serializer.data,
+    #                             status=status.HTTP_201_CREATED)
+    #         else:
+    #             return Response({'Ошибка': 'Рецепт уже есть в избранном'},
+    #                             status=status.HTTP_400_BAD_REQUEST)
+
+    #     obj = FavoriteRecipe.objects.filter(user=request.user,
+    #                                         recipe__id=pk).delete()
+
+    #     if obj[0] > 0:
+    #         return Response(status=status.HTTP_204_NO_CONTENT)
+    #     else:
+    #         return Response({'Ошибка': 'Рецепт отсутствует в избранном'},
+    #                         status=status.HTTP_400_BAD_REQUEST)
+
     @action(
         detail=True,
         methods=('post', 'delete'),
@@ -70,27 +99,50 @@ class RecipeViewSet(ModelViewSet):
     )
     def favorite(self, request, pk):
         if request.method == 'POST':
-            recipe = get_object_or_404(Recipe, id=pk)
-            obj, created = FavoriteRecipe.objects.get_or_create(
-                user=request.user,
-                recipe=recipe
-            )
-            if created:
-                serializer = ShortRecipeSerializer(recipe)
-                return Response(serializer.data,
-                                status=status.HTTP_201_CREATED)
-            else:
-                return Response({'Ошибка': 'Рецепт уже есть в избранном'},
+            if FavoriteRecipe.objects.filter(user=request.user, recipe__id=pk).exists():
+                return Response({'errors': 'Рецепт уже добавлен!'},
                                 status=status.HTTP_400_BAD_REQUEST)
-
-        obj = FavoriteRecipe.objects.filter(user=request.user,
-                                            recipe__id=pk).delete()
-
-        if obj[0] > 0:
+            recipe = get_object_or_404(Recipe, id=pk)
+            FavoriteRecipe.objects.create(user=request.user, recipe=recipe)
+            serializer = ShortRecipeSerializer(recipe)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        obj = FavoriteRecipe.objects.filter(user=request.user, recipe__id=pk)
+        if obj.exists():
+            obj.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
-        else:
-            return Response({'Ошибка': 'Рецепт отсутствует в избранном'},
-                            status=status.HTTP_400_BAD_REQUEST)
+        return Response({'errors': 'Рецепт уже удален!'},
+                        status=status.HTTP_400_BAD_REQUEST)
+
+
+    # @action(
+    #     detail=True,
+    #     methods=('post', 'delete'),
+    #     permission_classes=(IsAuthenticated,)
+    # )
+    # def shopping_cart(self, request, pk):
+    #     if request.method == 'POST':
+    #         recipe = get_object_or_404(Recipe, id=pk)
+    #         obj, created = ShoppingList.objects.get_or_create(
+    #             user=request.user,
+    #             recipe=recipe
+    #         )
+    #         if created:
+    #             serializer = ShortRecipeSerializer(recipe)
+    #             return Response(serializer.data,
+    #                             status=status.HTTP_201_CREATED)
+    #         else:
+    #             return Response({'Ошибка': 'Рецепт уже есть в списке покупок'},
+    #                             status=status.HTTP_400_BAD_REQUEST)
+
+    #     obj = ShoppingList.objects.filter(user=request.user,
+    #                                       recipe__id=pk).delete()
+
+    #     if obj[0] > 0:
+    #         return Response(status=status.HTTP_204_NO_CONTENT)
+    #     else:
+    #         return Response({'Ошибка': 'Рецепт отсутствует в списке покупок'},
+    #                         status=status.HTTP_400_BAD_REQUEST)
+
 
     @action(
         detail=True,
@@ -99,27 +151,19 @@ class RecipeViewSet(ModelViewSet):
     )
     def shopping_cart(self, request, pk):
         if request.method == 'POST':
-            recipe = get_object_or_404(Recipe, id=pk)
-            obj, created = ShoppingList.objects.get_or_create(
-                user=request.user,
-                recipe=recipe
-            )
-            if created:
-                serializer = ShortRecipeSerializer(recipe)
-                return Response(serializer.data,
-                                status=status.HTTP_201_CREATED)
-            else:
-                return Response({'Ошибка': 'Рецепт уже есть в списке покупок'},
+            if ShoppingList.objects.filter(user=request.user, recipe__id=pk).exists():
+                return Response({'errors': 'Рецепт уже добавлен!'},
                                 status=status.HTTP_400_BAD_REQUEST)
-
-        obj = ShoppingList.objects.filter(user=request.user,
-                                          recipe__id=pk).delete()
-
-        if obj[0] > 0:
+            recipe = get_object_or_404(Recipe, id=pk)
+            ShoppingList.objects.create(user=request.user, recipe=recipe)
+            serializer = ShortRecipeSerializer(recipe)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        obj = ShoppingList.objects.filter(user=request.user, recipe__id=pk)
+        if obj.exists():
+            obj.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
-        else:
-            return Response({'Ошибка': 'Рецепт отсутствует в списке покупок'},
-                            status=status.HTTP_400_BAD_REQUEST)
+        return Response({'errors': 'Рецепт уже удален!'},
+                        status=status.HTTP_400_BAD_REQUEST)
 
     @action(
         detail=False,
