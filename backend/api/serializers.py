@@ -70,7 +70,7 @@ class ShortRecipeSerializer(serializers.ModelSerializer):
 
 class SubscriptionsSerializer(CustomUserSerializer):
     recipes = serializers.SerializerMethodField()
-    recipes_count = serializers.ReadOnlyField(method='get_recipes_count')
+    recipes_count = serializers.ReadOnlyField(method_name='get_recipes_count')
 
     class Meta:
         model = User
