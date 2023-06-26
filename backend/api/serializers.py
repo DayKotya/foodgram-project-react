@@ -70,7 +70,7 @@ class ShortRecipeSerializer(serializers.ModelSerializer):
 
 class SubscriptionsSerializer(CustomUserSerializer):
     recipes = serializers.SerializerMethodField()
-    recipes_count = serializers.ReadOnlyField(method_name='get_recipes_count')
+    recipes_count = serializers.SerializerMethodField()
 
     class Meta:
         model = User
@@ -95,7 +95,7 @@ class SubscriptionsSerializer(CustomUserSerializer):
         if limit:
             recipes = recipes[:int(limit)]
         return ShortRecipeSerializer(recipes, many=True).data
-    
+
     def get_recipes_count(self, obj):
         return obj.recipes.count()
 
