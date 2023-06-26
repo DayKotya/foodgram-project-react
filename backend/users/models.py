@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.core.exceptions import ValidationError
 
 from users.validators import validate_username
 
@@ -39,3 +40,7 @@ class Subscribe(models.Model):
                 name='unique_subscribe'
             )
         ]
+
+    def clean(self):
+        if self.user == self.author:
+            raise ValidationError("Нельзя подписаться на самого себя.")
