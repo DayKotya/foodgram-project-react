@@ -36,7 +36,7 @@ jobs:
           script: |
             sudo docker pull daykotyara/foodgram_backend:latest
             sudo docker-compose stop
-            sudo docker-compose rm backend
+            sudo docker-compose rm daycat_backend_1
             touch .env
             echo SECRET_KEY="${{ secrets.SECRET_KEY }}" >> .env
             echo DB_ENGINE=${{ secrets.DB_ENGINE }} >> .env
