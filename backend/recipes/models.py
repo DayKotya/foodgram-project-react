@@ -1,6 +1,5 @@
 from django.db import models
 from django.core.validators import MinValueValidator
-from django.core.exceptions import ValidationError
 
 from users.models import User
 from recipes.validators import validate_hex_color
@@ -79,15 +78,6 @@ class Recipe(models.Model):
         verbose_name = 'Рецепт'
         verbose_name_plural = 'Рецепты'
         ordering = ('-id',)
-
-    def clean(self):
-        super().clean()
-
-        if not self.tags.exists():
-            raise ValidationError("Рецепт должен иметь хотя бы один тег.")
-
-        if not self.ingredients.exists():
-            raise ValidationError("Нужен хотя бы один ингредиент")
 
     def __str__(self):
         return self.name

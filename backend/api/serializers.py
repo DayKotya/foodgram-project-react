@@ -215,41 +215,48 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
         ingredients = value
 
         if not ingredients:
-            raise ValidationError({
-                'ingredients': 'Совсем без ингредиента нельзя!'
-            })
+            raise ValidationError(
+                detail='Добавьте какой-то ингредиент',
+                code=status.HTTP_400_BAD_REQUEST
+            )
 
-        ingredients_list = []
+        ingredients_set = set()
 
         for item in ingredients:
             ingredient = get_object_or_404(Ingredient, id=item['id'])
-            if ingredient in ingredients_list:
-                raise ValidationError({
-                    'ingredients': 'Ингредиенты не должны повторяться!'
-                })
+            if ingredient in ingredients_set:
+                raise ValidationError(
+                    detail='Ингредиенты должны быть уникальными',
+                    code=status.HTTP_400_BAD_REQUEST
+                )
             if int(item['amount']) < 1:
-                raise ValidationError({
-                    'amount': 'Ингредиента должно быть хоть сколько-то!'
-                })
-            ingredients_list.append(ingredient)
+                raise ValidationError(
+                    detail='Минимальное количество ингредиента - 1',
+                    code=status.HTTP_400_BAD_REQUEST
+                )
+            ingredients_set.add(ingredient)
+
         return value
 
     def validate_tags(self, value):
         tags = value
 
         if not tags:
-            raise ValidationError({
-                'tags': 'Совсем без тегов нельзя!'
-            })
+            raise ValidationError(
+                detail='Добавьте хотя бы один тэг',
+                code=status.HTTP_400_BAD_REQUEST
+            )
 
-        tags_list = []
+        tags_set = set()
 
         for tag in tags:
-            if tag in tags_list:
-                raise ValidationError({
-                    'tags': 'Теги должны быть уникальными!'
-                })
-            tags_list.append(tag)
+            if tag in tags_set:
+                raise ValidationError(
+                    detail='Тэги не должны повторяться',
+                    code=status.HTTP_400_BAD_REQUEST
+                )
+            tags_set.add(tag)
+
         return value
 
     def create(self, validated_data):
